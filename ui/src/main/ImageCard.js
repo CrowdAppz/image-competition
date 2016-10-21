@@ -5,9 +5,13 @@ import './ImageCard.css';
 import testImage from './test.jpg';
 
 class ImageCard extends React.Component {
+    static propTypes = {
+        imageData: React.PropTypes.string
+    };
+
     render() {
         const style = {
-            backgroundImage: 'url(' + testImage + ')'
+            backgroundImage: 'url(' + this.props.imageData + ')'
         }
         return (
             <div className="image-card-container">
