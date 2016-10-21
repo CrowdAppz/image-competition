@@ -13,7 +13,8 @@ class ImageCard extends React.Component {
         title: React.PropTypes.string,
         comments: React.PropTypes.array,
         tags: React.PropTypes.array,
-        imageBase64: React.PropTypes.string
+        imageBase64: React.PropTypes.string,
+        id: React.PropTypes.string
     };
 
     render() {
