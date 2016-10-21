@@ -1,0 +1,14 @@
+.searchbar-container {
+    margin: 0 auto;
+    display: block;
+    height: 64px;
+    background-color: #cecece;
+}
+
+.search-icon {
+    margin-right: 24px;
+}
+
+.search-input {
+    width: 500px;
+}
