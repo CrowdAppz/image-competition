@@ -98,7 +98,7 @@ class UploadForm extends React.Component {
                     open={this.props.isOpen}
                     onRequestClose={() => this.handleClose()}>
                 {this.state.base64Image
-                    ? <img className="upload-result-img" src={this.state.base64Image} />
+                    ? <img role="presentation" className="upload-result-img" src={this.state.base64Image} />
                     : this.renderDropZone()
                 }
                 <TextField style={{width: '100%'}}

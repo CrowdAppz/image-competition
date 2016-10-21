@@ -5,7 +5,7 @@ import './ImageCard.css';
 //import testImage from './test.jpg';
 
 const tagStyle = {
-  marginRight: "5px"
+  marginRight: "4px"
 }
 
 class ImageCard extends React.Component {
@@ -26,7 +26,7 @@ class ImageCard extends React.Component {
                     <div className="image-card-details">
                         <span className="image-card-title">{this.props.title}</span>
                         <span className="image-card-subtitle">
-                          {this.props.tags.map(tag => <span style={tagStyle}>{tag}</span>)}
+                          {this.props.tags.map((tag, index) => <span key={index} style={tagStyle}>{tag}</span>)}
                         </span>
                     </div>
                 </div>

@@ -23,8 +23,9 @@ class Main extends React.Component {
             <div className="main-container">
                 <SearchBar />
                 <div className="image-cards-container">
-                    {this.state.images.map(image =>
+                    {this.state.images.map((image, index) =>
                       <ImageCard title={image.title}
+                                 key={index}
                                  tags={image.tags}
                                  comments={image.comments}
                                  imageBase64={image.imageBase64}
