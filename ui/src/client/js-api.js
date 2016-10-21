@@ -11,7 +11,7 @@ const uploadImage = function(imageData, title, tags) {
     method: "POST",
     headers: new Headers({"Content-Type": "application/json"}),
     body: JSON.stringify({
-      imageData: imageData,
+      imageBase64: imageData,
       title: title,
       tags: tags
     })

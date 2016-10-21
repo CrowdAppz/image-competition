@@ -24,9 +24,8 @@ function initImageCollection(db) {
     });
 }
 
-function insertImage(image) {
-  var imageDoc = image.getJson();
-  collectionImage.insert(imageDoc, {w:1}, function(err, result){});
+function insertImage(imageJson) {
+  collectionImage.insert(imageJson, {w:1}, function(err, result){});
 }
 
 function getImages(cb) {

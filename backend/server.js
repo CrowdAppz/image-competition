@@ -6,7 +6,7 @@ var fs = require("fs");
 var mongoHandler = require('./mongoHandler');
 
 // create application/json parser
-var jsonParser = bodyParser.json();
+var jsonParser = bodyParser.json({'limit': '50mb'});
 
 // set headers for all responses
 app.use(function(req, res, next) {
@@ -26,9 +26,10 @@ app.use(function(req, res, next){
   }
 });
 
-app.post('/image/upload', function(req, res) {
+app.post('/image/upload', jsonParser, function(req, res) {
   // save the image base64 encoded string
-
+  console.log(req.body);
+  mongoHandler.insertImage(req.body);
   res.end();
 });
 
