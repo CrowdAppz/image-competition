@@ -1,14 +1,29 @@
 .searchbar-container {
-    margin: 0 auto;
     display: block;
-    height: 64px;
-    background-color: #cecece;
-}
+    text-align: center;
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 2;
+    margin: 0 16px;
 
-.search-icon {
-    margin-right: 24px;
+    background-image: linear-gradient(to bottom, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 1) 75%, rgba(255, 255, 255, 0.5) 100%)
 }
 
 .search-input {
-    width: 500px;
+    width: 50%;
+    padding: 8px 16px;
+    margin: 16px 0;
+    font-size: 14px;
+    line-height: 1.5;
+}
+@media screen and (max-width: 720px) {
+    .search-input {
+        width: 100%;
+        /*margin: 16px;*/
+    }
+}
+.search-input:focus {
+    outline: none;
 }
