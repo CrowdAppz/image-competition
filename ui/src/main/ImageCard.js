@@ -11,7 +11,7 @@ class ImageCard extends React.Component {
 
     render() {
         const style = {
-            backgroundImage: 'url(' + this.props.imageData + ')'
+            backgroundImage: 'url(' + testImage + ')'
         }
         return (
             <div className="image-card-container">

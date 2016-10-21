@@ -1,7 +1,11 @@
+import _ from "lodash";
 import React from 'react';
 import FlatButton from 'material-ui/FlatButton';
 import Dialog from 'material-ui/Dialog';
 import DropZone from 'react-dropzone';
+import ChipInput from 'material-ui-chip-input';
+
+import './UploadForm.css';
 
 class UploadForm extends React.Component {
     static propTypes = {
@@ -11,7 +15,10 @@ class UploadForm extends React.Component {
 
     constructor() {
         super();
-        this.state = {};
+        this.state = {
+            base64Image: null,
+            tags: []
+        };
     }
 
     handleFileRead(reader) {
@@ -28,16 +35,55 @@ class UploadForm extends React.Component {
         fileReader.readAsDataURL(acceptedFiles[0]);
     }
 
+    handleAddTag(tag) {
+        this.setState({
+            tags: this.state.tags.push(tag)
+        })
+    }
+
+    handleRemoveTag(tag) {
+        const indexOfTag = this.state.tags.indexOf(tag);
+        const tags = _.cloneDeep(this.state.tags);
+        tags.splice(indexOfTag, 1);
+        this.setState({
+            tags: tags
+        })
+    }
+
+    handleTagsChange(tags) {
+        this.setState({
+            tags: tags
+        });
+    }
+
+    handleClose() {
+        this.setState({
+            base64Image: null
+        });
+        this.props.onClose();
+    }
+
     getActions() {
         return [
             <FlatButton label="Cancel"
                         primary={true}
-                        onTouchTap={this.props.onClose} />,
+                        onTouchTap={() => this.handleClose()} />,
             <FlatButton label="Submit"
                         primary={true}
                         keyboardFocused={true}
-                        onTouchTap={this.props.onClose} />
+                        onTouchTap={() => this.handleClose()} />
       ];
+    }
+
+    renderDropZone() {
+        return (
+            <DropZone onDrop={(acceptedFiles) => this.handleDrop(acceptedFiles)}>
+                <div className="upload-dropzone-text">
+                    Drop your images here to upload them.
+                    Or click to select an image to upload.
+                </div>
+            </DropZone>
+        );
     }
 
     render() {
@@ -46,13 +92,15 @@ class UploadForm extends React.Component {
                     actions={this.getActions()}
                     modal={false}
                     open={this.props.isOpen}
-                    onRequestClose={this.props.onClose}>
-                <DropZone onDrop={(acceptedFiles) => this.handleDrop(acceptedFiles)}>
-                    <div className="upload-dropzone-text">
-                        Drop your images here to upload them.
-                        Or click to select an image to upload.
-                    </div>
-                </DropZone>
+                    onRequestClose={() => this.handleClose()}>
+                {this.state.base64Image
+                    ? <img className="upload-result-img" src={this.state.base64Image} />
+                    : this.renderDropZone()
+                }
+                <ChipInput style={{width: '100%'}}
+                           hintText="Tags"
+                           floatingLabelText="Tags"
+                           onChange={(tags) => this.handleTagsChange(tags)} />
             </Dialog>
         );
     }
