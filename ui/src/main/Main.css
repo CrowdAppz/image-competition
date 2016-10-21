@@ -6,12 +6,12 @@
 
 .image-cards-container {
     width: 50%;
-    margin: 0 auto;
+    margin: 72px auto 0;
 }
 
 @media screen and (max-width: 720px) {
     .image-cards-container {
         width: 100%;
-        padding: 0 16px;
+        margin: 72px 16px;
     }
 }
