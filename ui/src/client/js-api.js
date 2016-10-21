@@ -6,8 +6,16 @@ const search = function() {
   return fetch(serverAddress + "/search");
 }
 
-const uploadImage = function() {
-  return fetch(serverAddress + "/image/upload");
+const uploadImage = function(imageData, title, tags) {
+  return fetch(serverAddress + "/image/upload", {
+    method: "POST",
+    headers: new Headers({"Content-Type": "application/json"}),
+    body: JSON.stringify({
+      imageData: imageData,
+      title: title,
+      tags: tags
+    })
+  });
 }
 
 const getAllImages = function() {

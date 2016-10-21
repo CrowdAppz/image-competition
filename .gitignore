@@ -1,2 +1,3 @@
 backend/mongo/data/*
 backend/mongo/logs/*
+backend/node_modules/*
