@@ -28,23 +28,23 @@ app.use(function(req, res, next){
 
 app.post('/image/upload', jsonParser, function(req, res) {
   // save the image base64 encoded string
-  console.log(req.body);
   mongoHandler.insertImage(req.body);
   res.end();
 });
 
 app.get('/image/findall', function(req, res) {
   // find all images
-  mongoHandler.getImages(function(items){
-    //console.log(items);
-    res.end(JSON.stringify(items));
+  mongoHandler.getImages(function(imageData){
+    res.end(JSON.stringify(imageData));
   });
 });
 
-app.get('/search', jsonParser, function(req, res) {
+app.post('/search', function(req, res) {
   // search
-
-  res.end();
+  console.log(req);
+  mongoHandler.getImagesByTags(req.text, function(imageData){
+    res.end(JSON.stringify(imageData));
+  });
 });
 
 

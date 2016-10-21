@@ -30,10 +30,16 @@ function insertImage(imageJson) {
 
 function getImages(cb) {
   collectionImage.find().toArray(function(err, items) {
-    console.log(err);
+    cb(items);
+  });
+}
+
+function getImagesByTags(tag, cb) {
+  collectionImage.find({'tags':{ '$in': [tag]}}).toArray(function(err, items){
     cb(items);
   });
 }
 
 exports.insertImage = insertImage;
 exports.getImages = getImages;
+exports.getImagesByTags = getImagesByTags;
