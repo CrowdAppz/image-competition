@@ -2,6 +2,7 @@ import React from 'react';
 import SearchBar from './SearchBar';
 import ImageCard from './ImageCard';
 import UploadButton from './upload/UploadButton';
+import * as JsApi from '../client/js-api.js';
 
 import './Main.css';
 
@@ -9,28 +10,25 @@ class Main extends React.Component {
     constructor() {
         super();
 
-        this.state = {};
+        this.state = {'images': []};
     }
 
     componentWillMount() {
         // client.getData().then(response => response.json() ).then(json => this.setState({imageData: json}))
+        JsApi.getAllImages().then(response => response.json()).then(json => this.setState({'images': json}));
     }
 
     render() {
-        const imageData="foo";
         return (
             <div className="main-container">
                 <SearchBar />
                 <div className="image-cards-container">
-                    {this.state.data.map(image => <ImageCard imageData={image.data} />)}
-                    <ImageCard imageData={this.state.imageData}/>
-                    <ImageCard />
-                    <ImageCard />
-                    <ImageCard />
-                    <ImageCard />
-                    <ImageCard />
-                    <ImageCard />
-                    <ImageCard />
+                    {this.state.images.map(image =>
+                      <ImageCard title={image.title}
+                                 tags={image.tags}
+                                 comments={image.comments}
+                                 imageBase64={image.imageBase64}
+                      />)}
                 </div>
                 <UploadButton />
             </div>

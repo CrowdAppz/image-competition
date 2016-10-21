@@ -1,4 +1,4 @@
-let host = "localhost";
+let host = "http://localhost";
 let port = 8001;
 let serverAddress = host + ":" + port;
 
@@ -14,6 +14,4 @@ const getAllImages = function() {
   return fetch(serverAddress + "/image/findall");
 }
 
-export search;
-export uploadImage;
-export getAllImages;
+export {search, uploadImage, getAllImages};
