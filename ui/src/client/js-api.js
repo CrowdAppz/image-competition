@@ -49,7 +49,7 @@ const autocomplete = function(text){
   });
 }
 
-const getSimilarImages = function(wordArray, limit){
+const getSimilarImages = function(wordArray, limit) {
   if (!wordArray || wordArray.length === 0) {
     return;
   }

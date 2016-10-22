@@ -17,6 +17,7 @@ class SimilarImages extends React.Component {
     }
 
     handleImageClick(id) {
+        console.log("navigating to " + id);
         browserHistory.push(`/detail/${id}`);
     }
 
@@ -24,7 +25,7 @@ class SimilarImages extends React.Component {
         return (
             <div key={index}
                  className="similar-image"
-                 onChange={() => this.handleImageClick(image._id)}
+                 onClick={() => this.handleImageClick(image._id)}
                  style={{backgroundImage: `url(${image.imageBase64})`}}>
             </div>
         );

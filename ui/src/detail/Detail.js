@@ -18,12 +18,23 @@ class Detail extends React.Component {
             image: "",
             tags: [],
             comments: [],
-            title: ""
+            title: "",
+            similarImages: [],
         };
     }
 
     componentWillMount() {
-        getImage(this.props.params.id)
+        this.loadData(this.props.params.id);
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (this.props.params.id !== nextProps.params.id) {
+            this.loadData(nextProps.params.id);
+        }
+    }
+
+    loadData(id) {
+        getImage(id)
             .then(response => response.json())
             .then(json => {
                 this.setState({
@@ -42,7 +53,7 @@ class Detail extends React.Component {
                     getSimilarImages(words, 10)
                         .then(response => response.json())
                         .then(json => {
-                            const similarImages = json.filter(image => image._id !== this.props.params.id);
+                            const similarImages = json.filter(image => image._id !== id);
                             this.setState({
                                 similarImages: similarImages
                             });
