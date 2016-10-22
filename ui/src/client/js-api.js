@@ -49,8 +49,11 @@ const autocomplete = function(text){
   });
 }
 
-const getSimilarImages = function(wordArray, limit){
-  var query = "";
+const getSimilarImages = function(wordArray, limit) {
+  if (!wordArray || wordArray.length === 0) {
+    return;
+  }
+  let query = "";
   wordArray.map(word => query += word +",");
   return fetch(serverAddress + "/image/similar/"+limit+"?words="+query);
 }

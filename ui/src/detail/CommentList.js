@@ -23,7 +23,10 @@ class CommentList extends React.Component {
         return (
             <div className="comment-list-container">
                 <CommentInput onSendComment={this.props.onSendComment} />
-                {this.props.comments.map((comment, index) => this.renderComment(comment, index))}
+                {this.props.comments && this.props.comments.length > 0
+                    ? this.props.comments.map((comment, index) => this.renderComment(comment, index))
+                    : null
+                }
             </div>
         );
     }

@@ -5,19 +5,20 @@
 .similar-images {
     overflow-y: hidden;
     overflow-x: scroll;
-    height: 320px;
+    height: 180px;
     width: auto;
     white-space: nowrap;
     margin: 0 8px;
 }
 
 .similar-image {
-    height: 320px;
-    width: 180px;
-    color: white;
-    background-color: darkblue;
+    height: 180px;
     margin: 0 8px;
-    /*float: left;*/
+    width: 320px;
     display: inline-block;
-
+    background-position: center;
+    background-size: cover;
+}
+.similar-image:hover {
+    cursor: pointer;
 }

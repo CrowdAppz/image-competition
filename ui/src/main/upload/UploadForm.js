@@ -83,12 +83,16 @@ class UploadForm extends React.Component {
                     if (this.isAtLeastPossible(faceAnnotation.headwearLikelihood)) {
                         moods.push("headwear");
                     }
-                    return moods;
+                    if(moods.length > 0) {
+                        return moods;
+                    }
+                    return null;
                 }));
         }
 
         // remove duplicates
-        tags = tags.filter((item, index, self) => self.indexOf(item) === index);
+        tags = tags.filter((item, index, self) => self.indexOf(item) === index)
+            .filter((item) => item !== null);
 
         this.setState({
             tags: tags
