@@ -10,6 +10,14 @@ import {annotateImage} from '../../client/vision-api';
 
 import './UploadForm.css';
 
+const styles = {
+    dropZone: {
+        width: "100%",
+        border: "1px dashed #999",
+        padding: "32px"
+    }
+};
+
 class UploadForm extends React.Component {
     static propTypes = {
         isOpen: React.PropTypes.bool.isRequired,
@@ -130,6 +138,7 @@ class UploadForm extends React.Component {
     handleClose() {
         this.setState({
             base64Image: null,
+            title: null,
             tags: []
         });
         this.props.onClose();
@@ -160,7 +169,8 @@ class UploadForm extends React.Component {
 
     renderDropZone() {
         return (
-            <DropZone onDrop={(acceptedFiles) => this.handleDrop(acceptedFiles)}>
+            <DropZone style={styles.dropZone}
+                      onDrop={(acceptedFiles) => this.handleDrop(acceptedFiles)}>
                 <div className="upload-dropzone-text">
                     Drop your images here to upload them.
                     Or click to select an image to upload.
@@ -177,7 +187,8 @@ class UploadForm extends React.Component {
                     open={this.props.isOpen}
                     onRequestClose={() => this.handleClose()}>
                 {this.state.base64Image
-                    ? <img role="presentation" className="upload-result-img" src={this.state.base64Image} />
+                    ? <div className="upload-result-img"
+                           style={{backgroundImage: `url(${this.state.base64Image})`}} />
                     : this.renderDropZone()
                 }
                 <TextField style={{width: '100%'}}
