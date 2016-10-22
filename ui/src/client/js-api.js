@@ -49,6 +49,13 @@ const autocomplete = function(text){
   });
 }
 
+const getSimilarImages = function(wordArray, limit){
+  var query = "";
+  wordArray.map(word => query += word +",");
+  return fetch(serverAddress + "/image/similar/"+limit+"?words="+query);
+}
+
 window.autocomplete = autocomplete;
 window.getImage = getImage;
-export {search, uploadImage, getAllImages, getImage, addCommentToImage, autocomplete};
+window.getSimilarImages = getSimilarImages;
+export {search, uploadImage, getAllImages, getSimilarImages, getImage, addCommentToImage, autocomplete};

@@ -12,6 +12,7 @@ const getKeyPhrases = require("./cognitive-services-api").getKeyPhrases;
 const getSentiment = require("./cognitive-services-api").getSentiment;
 const getSentimentScore = require("./image-statistics-utils").getSentimentScore;
 const getTopKeyPhrases = require("./image-statistics-utils").getTopKeyPhrases;
+const getSimilarWords = require("./similar-api").getSimilarWords;
 
 // set headers for all responses
 app.use(function(req, res, next) {
@@ -46,8 +47,7 @@ app.get('/image/findall', function(req, res) {
 
 app.post('/image/search', function(req, res) {
     // search
-    console.log(req);
-    mongoHandler.getImagesByTags(req.text, function(imageData){
+    mongoHandler.getImagesByTags([req.text], function(imageData){
         res.end(JSON.stringify(imageData));
     });
 });
@@ -90,26 +90,21 @@ app.post('/image/addcomment', jsonParser, function(req, res){
         .catch(error => console.warn("Error while loading keyphrases:", error));
 });
 
-app.post('/image/similar/:limit', function(res, req){
+app.get('/image/similar/:limit', function(req, res){
     var words = req.query.words;
     var limit = req.params.limit;
-    var resourcePath = "";
-    if(words.indexOf(",") > -1){
-      resourcePath = "/words/similar/"+limit+"?words="+words;
-    }else{
-      resourcePath = "/words/similar/"+words+"/"+limit;
-    }
-    console.log(resourcePath);
-    const URL = "localhost:8002"+resourcePath;
 
-    fetch(URL, {
-        method: "GET"
-      })
+    getSimilarWords(words, limit)
       .then(response => response.json())
       .then(items => {
+        items = items.concat(words.split(","));
         mongoHandler.getImagesByTags(items, function(imageData){
           res.end(JSON.stringify(imageData));
         });
+      })
+      .catch(error => {
+        console.warn("Error while loading similar images:", error);
+        res.end(error);
       });
 });
 

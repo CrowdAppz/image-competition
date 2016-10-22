@@ -41,8 +41,8 @@ function getImage(imageId, cb){
 
 }
 
-function getImagesByTags(tag, cb) {
-  collectionImage.find({'tags':{ '$in': [tag]}}).toArray(function(err, items){
+function getImagesByTags(tags, cb) {
+  collectionImage.find({'tags':{ '$in': tags}}).toArray(function(err, items){
     cb(items);
   });
 }

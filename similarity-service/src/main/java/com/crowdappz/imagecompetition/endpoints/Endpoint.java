@@ -33,7 +33,6 @@ public class Endpoint {
             List<String> nearestWords = WordVectorHandler.getNearestWords(word, limit);
             allNearestWords.addAll(nearestWords);
         }
-
         return Response.ok(new GenericEntity<Set<String>>(allNearestWords){}).build();
     }
 }
