@@ -1,4 +1,6 @@
 import React from 'react';
+import * as JsApi from '../client/js-api.js';
+import AutoComplete from 'material-ui/AutoComplete';
 
 import './SearchBar.css';
 
@@ -10,27 +12,38 @@ class SearchBar extends React.Component {
 
     constructor(){
       super();
-      this.state={text:""};
+      this.state = {text:"",
+                    dataSource: []
+                   };
     }
 
-    handleKeyPress(event) {
+    handleKeyPress = (event) => {
       if(event.key === 'Enter'){
         this.props.onSearch(this.state.text);
       }
     }
 
-    handleChange(event) {
-      this.setState({text: event.target.value});
+    handleChange = (value) => {
+      this.setState({text: value});
+      this.props.onSearch(this.state.text);
+    }
+
+    handleUpdateInput = (value) => {
+      this.setState({text: value});
+      JsApi.autocomplete(value)
+           .then(response => response.json())
+           .then(json => this.setState({dataSource: json}))
     }
 
     render() {
         return (
             <div className="searchbar-container">
-                <input className="search-input"
-                       autofocus
-                       placeholder="Search"
-                       onKeyPress={event => this.handleKeyPress(event)}
-                       onChange={event => this.handleChange(event)}/>
+                <AutoComplete
+                  hintText="Search"
+                  dataSource={this.state.dataSource}
+                  onUpdateInput={this.handleUpdateInput}
+                  onNewRequest={this.handleChange}
+                />
             </div>
         );
     }
