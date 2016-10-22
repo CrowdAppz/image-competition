@@ -48,7 +48,6 @@ class CommentInput extends React.Component {
         return (
             <div className="comment-input-container">
                 <TextField hintText="Add new comment"
-                           floatingLabelText="Add new comment"
                            value={this.state.comment}
                            onChange={(event) => this.handleInputChange(event)}
                            onKeyPress={(event) => this.handleKeyPress(event)} />

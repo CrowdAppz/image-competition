@@ -21,7 +21,7 @@ class TagRow extends React.Component {
                         <Chip key={index}
                               style={tagStyle}
                               className="tag-row-tag">
-                              tag
+                              {tag}
                         </Chip>
                     );
                 })}
