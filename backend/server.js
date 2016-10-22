@@ -62,13 +62,13 @@ app.post('/image/addcomment', jsonParser, function(req, res){
   });
 });
 
-// app.post('/autocomplete', function(req, res){
-//   var result = [];
-//   mongoHandler.getDistinctTags(function(items){
-//     console.log(items);
-//     return items.filter(item => item.startsWith(req.text))
-//   });
-// });
+app.post('/autocomplete', function(req, res){
+  var result = [];
+  mongoHandler.getDistinctTags(function(items){
+    var filtered = items.filter(item => item.startsWith(req.text));
+    res.end(JSON.stringify(filtered));
+  });
+});
 
 
 var server = app.listen(8001, 'localhost', function() {

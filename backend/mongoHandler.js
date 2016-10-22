@@ -57,13 +57,13 @@ function addCommentToImage(imageId, comment, cb) {
                  .toArray(function(err, items){ cb(items); });
 }
 
-// function getDistinctTags(cb){
-//   cb(collectionImage.distinct("tags");
-// }
+function getDistinctTags(cb){
+  collectionImage.distinct("tags").then(tags=>cb(tags));
+}
 
 exports.insertImage = insertImage;
 exports.getImages = getImages;
+exports.getImage = getImage;
 exports.getImagesByTags = getImagesByTags;
 exports.addCommentToImage = addCommentToImage;
-//exports.getDistinctTags = getDistinctTags;
-exports.getImage = getImage;
+exports.getDistinctTags = getDistinctTags;
