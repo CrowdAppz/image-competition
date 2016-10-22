@@ -9,3 +9,5 @@ backend/credentials.json
 backend/mongo/data/*
 backend/mongo/logs/*
 backend/node_modules/*
+botfred/botkit/*
+botfred/node_modules/*
