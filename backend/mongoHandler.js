@@ -50,11 +50,12 @@ function getImagesByTags(tag, cb) {
 function addCommentToImage(imageId, comment, cb) {
   collectionImage.update(
     {'_id': new ObjectId(imageId)},
-    {'$push': {'comments': comment}}
+    {'$push': {'comments': comment}},
+    function(err, count, status){
+        collectionImage.find({'_id': new ObjectId(imageId)},{'comments': 1})
+                       .toArray(function(err, items){ cb(items); });
+    }
   );
-
-  collectionImage.find({'_id': new ObjectId(imageId)},{'comments': 1})
-                 .toArray(function(err, items){ cb(items); });
 }
 
 function getDistinctTags(cb){
