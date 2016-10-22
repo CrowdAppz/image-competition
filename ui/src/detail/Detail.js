@@ -4,6 +4,7 @@ import TagRow from './TagRow';
 import KeyPhrases from './KeyPhrases';
 import SentimentScore from './SentimentScore';
 import CommentList from './CommentList';
+import SimilarImages from './SimilarImages';
 import {getImage, addCommentToImage} from '../client/js-api';
 
 import './Detail.css';
@@ -22,21 +23,19 @@ class Detail extends React.Component {
     }
 
     componentWillMount() {
-        //TOOD load image data
-        console.log(`Loading image data for id ${this.props.params.id}`);
         getImage(this.props.params.id)
-        .then(response => response.json())
-        .then(json => {
-            this.setState({
-                image: json.imageBase64,
-                tags: json.tags,
-                comments: json.comments,
-                title: json.title,
-                keyPhrases: json.topKeyPhrases,
-                sentimentScore: json.sentimentScore
+            .then(response => response.json())
+            .then(json => {
+                this.setState({
+                    image: json.imageBase64,
+                    tags: json.tags,
+                    comments: json.comments,
+                    title: json.title,
+                    keyPhrases: json.topKeyPhrases,
+                    sentimentScore: json.sentimentScore
+                })
             })
-        })
-        .catch(error => console.warn("Error while loading image details", error));
+            .catch(error => console.warn("Error while loading image details", error));
     }
 
     handleSendComment(commentText) {
@@ -56,6 +55,7 @@ class Detail extends React.Component {
                 <SentimentScore sentimentScore={this.state.sentimentScore} />
                 <CommentList comments={this.state.comments}
                              onSendComment={(commentText) => this.handleSendComment(commentText)} />
+                <SimilarImages images={["a", "b", "c", "d", "e", "f", "g", "h"]}/>
             </div>
         );
     }

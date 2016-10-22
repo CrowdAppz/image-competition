@@ -1,0 +1,23 @@
+.similar-images-container {
+    margin: 8px;
+}
+
+.similar-images {
+    overflow-y: hidden;
+    overflow-x: scroll;
+    height: 320px;
+    width: auto;
+    white-space: nowrap;
+    margin: 0 8px;
+}
+
+.similar-image {
+    height: 320px;
+    width: 180px;
+    color: white;
+    background-color: darkblue;
+    margin: 0 8px;
+    /*float: left;*/
+    display: inline-block;
+
+}

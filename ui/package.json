@@ -7,13 +7,18 @@
   },
   "dependencies": {
     "lodash": "^4.16.4",
+    "material-auto-rotating-carousel": "^1.0.1",
     "material-ui": "^0.16.1",
     "material-ui-chip-input": "^0.8.0",
     "react": "^15.3.2",
     "react-dom": "^15.3.2",
     "react-dropzone": "^3.7.0",
+    "react-motion": "^0.4.5",
     "react-router": "^2.8.1",
-    "react-tap-event-plugin": "^1.0.0"
+    "react-slick": "^0.14.5",
+    "react-swipeable-views": "^0.7.10",
+    "react-tap-event-plugin": "^1.0.0",
+    "slick-carousel": "^1.6.0"
   },
   "scripts": {
     "start": "react-scripts start",
