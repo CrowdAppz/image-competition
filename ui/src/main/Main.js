@@ -18,10 +18,18 @@ class Main extends React.Component {
         JsApi.getAllImages().then(response => response.json()).then(json => this.setState({'images': json}));
     }
 
+
+    handleSearch(text) {
+      const self = this;
+      JsApi.search(text)
+        .then(response => response.json())
+        .then(json => self.setState({'images': json}));
+    }
+
     render() {
         return (
             <div className="main-container">
-                <SearchBar />
+                <SearchBar onSearch={text=>this.handleSearch(text)}/>
                 <div className="image-cards-container">
                     {this.state.images.map(image =>
                       <ImageCard title={image.title}
