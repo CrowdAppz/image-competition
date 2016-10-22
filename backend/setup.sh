@@ -6,3 +6,4 @@ mongoimport --db images --collection image --file ./sample.json
 npm install express
 npm install body-parser
 npm install mongodb
+npm install node-fetch

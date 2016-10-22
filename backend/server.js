@@ -90,6 +90,29 @@ app.post('/image/addcomment', jsonParser, function(req, res){
         .catch(error => console.warn("Error while loading keyphrases:", error));
 });
 
+app.post('/image/similar/:limit', function(res, req){
+    var words = req.query.words;
+    var limit = req.params.limit;
+    var resourcePath = "";
+    if(words.indexOf(",") > -1){
+      resourcePath = "/words/similar/"+limit+"?words="+words;
+    }else{
+      resourcePath = "/words/similar/"+words+"/"+limit;
+    }
+    console.log(resourcePath);
+    const URL = "localhost:8002"+resourcePath;
+
+    fetch(URL, {
+        method: "GET"
+      })
+      .then(response => response.json())
+      .then(items => {
+        mongoHandler.getImagesByTags(items, function(imageData){
+          res.end(JSON.stringify(imageData));
+        });
+      });
+});
+
 app.post('/autocomplete', function(req, res){
     var result = [];
     mongoHandler.getDistinctTags(function(items){
