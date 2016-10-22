@@ -50,7 +50,9 @@ class Detail extends React.Component {
                     if (json.topKeyPhrases) {
                         words = words.concat(json.topKeyPhrases);
                     }
-                    getSimilarImages(words, 10)
+
+                    const SIMILAR_IMAGES_LIMIT = 50;
+                    getSimilarImages(words, SIMILAR_IMAGES_LIMIT)
                         .then(response => response.json())
                         .then(json => {
                             const similarImages = json.filter(image => image._id !== id);
