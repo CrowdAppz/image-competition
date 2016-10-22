@@ -22,8 +22,10 @@ class SimilarImages extends React.Component {
 
     renderImage(image, index) {
         return (
-            <div key={index} className="similar-image">
-                <h1>{index}</h1>
+            <div key={index}
+                 className="similar-image"
+                 onChange={() => this.handleImageClick(image._id)}
+                 style={{backgroundImage: `url(${image.imageBase64})`}}>
             </div>
         );
     }
