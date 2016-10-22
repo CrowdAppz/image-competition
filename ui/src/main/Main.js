@@ -18,7 +18,6 @@ class Main extends React.Component {
         JsApi.getAllImages().then(response => response.json()).then(json => this.setState({'images': json}));
     }
 
-
     handleSearch(text) {
       const self = this;
       JsApi.search(text)

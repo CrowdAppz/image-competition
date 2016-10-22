@@ -47,13 +47,28 @@ app.post('/image/search', function(req, res) {
   });
 });
 
+app.get('/image/:imageId', function(req, res){
+  mongoHandler.getImage(req.params.imageId, function(imageData){
+    res.end(JSON.stringify(imageData));
+  });
+});
+
 app.post('/image/addcomment', jsonParser, function(req, res){
   var imageId = req.body.imageId;
   var comment = req.body.comment;
 
-  mongoHandler.addCommentToImage(imageId, comment);
-  res.end();
+  mongoHandler.addCommentToImage(imageId, comment, function(comments){
+    res.end(JSON.stringify(comments));
+  });
 });
+
+// app.post('/autocomplete', function(req, res){
+//   var result = [];
+//   mongoHandler.getDistinctTags(function(items){
+//     console.log(items);
+//     return items.filter(item => item.startsWith(req.text))
+//   });
+// });
 
 
 var server = app.listen(8001, 'localhost', function() {

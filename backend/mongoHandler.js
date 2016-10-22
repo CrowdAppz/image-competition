@@ -35,20 +35,35 @@ function getImages(cb) {
   });
 }
 
+function getImage(imageId, cb){
+  collectionImage.findOne({'_id': new ObjectId(imageId)})
+                 .then(function(image){cb(image)});
+
+}
+
 function getImagesByTags(tag, cb) {
   collectionImage.find({'tags':{ '$in': [tag]}}).toArray(function(err, items){
     cb(items);
   });
 }
 
-function addCommentToImage(imageId, comment) {
+function addCommentToImage(imageId, comment, cb) {
   collectionImage.update(
     {'_id': new ObjectId(imageId)},
     {'$push': {'comments': comment}}
   );
+
+  collectionImage.find({'_id': new ObjectId(imageId)},{'comments': 1})
+                 .toArray(function(err, items){ cb(items); });
 }
+
+// function getDistinctTags(cb){
+//   cb(collectionImage.distinct("tags");
+// }
 
 exports.insertImage = insertImage;
 exports.getImages = getImages;
 exports.getImagesByTags = getImagesByTags;
 exports.addCommentToImage = addCommentToImage;
+//exports.getDistinctTags = getDistinctTags;
+exports.getImage = getImage;
