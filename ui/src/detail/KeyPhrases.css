@@ -1,0 +1,11 @@
+.key-phrases-container {
+    margin: 8px;
+}
+
+.key-phrase {
+    margin: 8px;
+    font-weight: bold;
+    line-height: 2;
+    font-size: 14px;
+    font-style: italic;
+}

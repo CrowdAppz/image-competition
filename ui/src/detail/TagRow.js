@@ -1,12 +1,19 @@
 import React from 'react';
 import Chip from 'material-ui/Chip';
+import Subheader from 'material-ui/Subheader';
 
 import './TagRow.css';
 
-const tagStyle = {
-    margin: "8px",
-    float: "left"
-}
+const styles = {
+    tagStyle: {
+        margin: "8px",
+        float: "left"
+    },
+    subHeaderStyle: {
+        lineHeight: "2",
+        paddingLeft: "8px"
+    }
+};
 
 class TagRow extends React.Component {
     static propTypes = {
@@ -16,10 +23,11 @@ class TagRow extends React.Component {
     render() {
         return (
             <div className="tag-row">
+                <Subheader style={styles.subHeaderStyle}>Tags</Subheader>
                 {this.props.tags.map((tag, index) => {
                     return (
                         <Chip key={index}
-                              style={tagStyle}
+                              style={styles.tagStyle}
                               className="tag-row-tag">
                               {tag}
                         </Chip>

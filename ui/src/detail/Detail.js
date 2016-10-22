@@ -1,6 +1,8 @@
 import React from 'react';
-import TagRow from './TagRow';
 import HeaderImage from './HeaderImage';
+import TagRow from './TagRow';
+import KeyPhrases from './KeyPhrases';
+import SentimentScore from './SentimentScore';
 import CommentList from './CommentList';
 import {getImage, addCommentToImage} from '../client/js-api';
 
@@ -29,7 +31,9 @@ class Detail extends React.Component {
                 image: json.imageBase64,
                 tags: json.tags,
                 comments: json.comments,
-                title: json.title
+                title: json.title,
+                keyPhrases: json.topKeyPhrases,
+                sentimentScore: json.sentimentScore
             })
         })
         .catch(error => console.warn("Error while loading image details", error));
@@ -48,6 +52,8 @@ class Detail extends React.Component {
             <div className="detail-container">
                 <HeaderImage image={this.state.image} title={this.state.title} />
                 <TagRow tags={this.state.tags} />
+                <KeyPhrases keyPhrases={this.state.keyPhrases} />
+                <SentimentScore sentimentScore={this.state.sentimentScore} />
                 <CommentList comments={this.state.comments}
                              onSendComment={(commentText) => this.handleSendComment(commentText)} />
             </div>

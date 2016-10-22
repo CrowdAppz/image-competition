@@ -1,4 +1,5 @@
 import React from 'react';
+import Paper from 'material-ui/Paper';
 import CommentInput from './CommentInput';
 
 import './CommentList.css';
@@ -11,10 +12,10 @@ class CommentList extends React.Component {
 
     renderComment(comment, index) {
         return (
-            <div className="comment-container" key={index}>
+            <Paper className="comment-container" key={index} zDepth={1}>
                 <div className="comment-time">A few moments ago</div>
                 <div className="comment-text">{comment.text}</div>
-            </div>
+            </Paper>
         );
     }
 
