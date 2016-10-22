@@ -1,3 +1,8 @@
+.idea
+*.iml
+target/
+glove.6B/
+*glove*.txt
 ui/src/client/credentials.json
 backend/mongo/data/*
 backend/mongo/logs/*
