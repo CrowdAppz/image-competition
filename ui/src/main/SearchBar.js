@@ -29,6 +29,8 @@ class SearchBar extends React.Component {
     }
 
     handleUpdateInput = (value) => {
+      if(value === "") {this.props.onSearch("")}; //trigger search for all images when input field is empty
+
       this.setState({text: value});
       JsApi.autocomplete(value)
            .then(response => response.json())

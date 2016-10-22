@@ -7,7 +7,6 @@ const getSimilarWords = (words, limit) => {
   }else{
     resourcePath = "/words/similar/"+words+"/"+limit;
   }
-  console.log(resourcePath);
   const URL = "http://localhost:8002"+resourcePath;
 
   return fetch(URL, {
