@@ -12,6 +12,10 @@ const styles = {
 };
 
 class CommentInput extends React.Component {
+    static propTypes = {
+        onSendComment: React.PropTypes.func
+    }
+
     constructor() {
         super();
 
@@ -34,9 +38,10 @@ class CommentInput extends React.Component {
 
     handleSend() {
         console.log(`Sending "${this.state.comment}" to the backend`);
+        this.props.onSendComment(this.state.comment);
         this.setState({
             comment: ""
-        })
+        });
     }
 
     render() {

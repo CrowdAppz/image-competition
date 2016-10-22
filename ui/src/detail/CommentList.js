@@ -5,7 +5,8 @@ import './CommentList.css';
 
 class CommentList extends React.Component {
     static propTypes = {
-        comments: React.PropTypes.array
+        comments: React.PropTypes.array,
+        onSendComment: React.PropTypes.func
     }
 
     renderComment(comment, index) {
@@ -20,7 +21,7 @@ class CommentList extends React.Component {
     render() {
         return (
             <div className="comment-list-container">
-                <CommentInput />
+                <CommentInput onSendComment={this.props.onSendComment} />
                 {this.props.comments.map((comment, index) => this.renderComment(comment, index))}
             </div>
         );
