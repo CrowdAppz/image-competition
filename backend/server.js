@@ -8,6 +8,10 @@ var mongoHandler = require('./mongoHandler');
 // create application/json parser
 var jsonParser = bodyParser.json({'limit': '50mb'});
 
+const getKeyPhrases = require("./cognitive-services-api").getKeyPhrases;
+const getSentiment = require("./cognitive-services-api").getSentiment;
+
+
 // set headers for all responses
 app.use(function(req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
@@ -57,9 +61,28 @@ app.post('/image/addcomment', jsonParser, function(req, res){
   var imageId = req.body.imageId;
   var comment = req.body.comment;
 
-  mongoHandler.addCommentToImage(imageId, comment, function(comments){
-    res.end(JSON.stringify(comments));
-  });
+
+  // Keyphrase result: {"documents":[{"keyPhrases":["food","tapas","weather","barcelona"],"id":"foo-to-the-bar"}],"errors":[]}
+  // Sentiment result: {"documents":[{"score":0.9080997,"id":"foo-to-the-bar"}],"errors":[]}
+  getKeyPhrases(comment)
+    .then(response => response.json())
+    .then(keyPhraseResult => {
+      getSentiment(comment)
+        .then(response => response.json())
+        .then(sentimentResult => {
+          const commentObj = {
+            text: comment,
+            keyPhrases: keyPhraseResult.documents[0].keyPhrases,
+            sentiment: sentimentResult.documents[0].score
+          };
+
+          mongoHandler.addCommentToImage(imageId, commentObj, function(comments){
+            res.end(JSON.stringify(comments));
+          });
+        })
+        .catch(error => console.warn("Error while loading sentiment:", error));
+    })
+    .catch(error => console.warn("Error while loading keyphrases:", error));
 });
 
 app.post('/autocomplete', function(req, res){
