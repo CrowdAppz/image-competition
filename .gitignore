@@ -4,6 +4,7 @@ target/
 glove.6B/
 *glove*.txt
 ui/src/client/credentials.json
+backend/credentials.json
 backend/mongo/data/*
 backend/mongo/logs/*
 backend/node_modules/*

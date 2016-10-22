@@ -6,6 +6,7 @@ import DropZone from 'react-dropzone';
 import ChipInput from 'material-ui-chip-input';
 import TextField from 'material-ui/TextField';
 import {uploadImage} from '../../client/js-api';
+import {annotateImage} from '../../client/vision-api';
 
 import './UploadForm.css';
 
@@ -24,11 +25,88 @@ class UploadForm extends React.Component {
         };
     }
 
+    isAtLeastPossible(likelihood) {
+        return likelihood === "POSSIBLE"
+            || likelihood === "LIKELY"
+            || likelihood === "VERY_LIKELY";
+    }
+
+    convertImageAnnotationsToTags(imageAnnotations) {
+        const annotation = imageAnnotations.responses[0];
+        let tags = this.state.tags;
+        // extract landmark annotations if available
+        if (annotation.landmarkAnnotations) {
+            tags = tags.concat(annotation.landmarkAnnotations
+                .map(landmarkAnnotation => landmarkAnnotation.description));
+        }
+
+        // extract logo annotations if available
+        if (annotation.logoAnnotations) {
+            tags = tags.concat(annotation.logoAnnotations
+                .map(logoAnnotation => logoAnnotation.description));
+        }
+
+        // extract labels if available
+        if (annotation.labelAnnotations) {
+            tags = tags.concat(annotation.labelAnnotations
+                .map(labelAnnotation => labelAnnotation.description));
+        }
+
+        // extract moods / facial annotations
+        if (annotation.faceAnnotations) {
+            tags = tags.concat(annotation.faceAnnotations
+                .map(faceAnnotation => {
+                    let moods = [];
+                    if (this.isAtLeastPossible(faceAnnotation.joyLikelihood))  {
+                        moods.push("joy");
+                    }
+                    if (this.isAtLeastPossible(faceAnnotation.sorrowLikelihood)) {
+                        moods.push("sorrow");
+                    }
+                    if (this.isAtLeastPossible(faceAnnotation.angerLikelihood)) {
+                        moods.push("anger");
+                    }
+                    if (this.isAtLeastPossible(faceAnnotation.surpriseLikelihood)) {
+                        moods.push("surprise");
+                    }
+                    if (this.isAtLeastPossible(faceAnnotation.blurredLikelihood)) {
+                        moods.push("blurred");
+                    }
+                    if (this.isAtLeastPossible(faceAnnotation.headwearLikelihood)) {
+                        moods.push("headwear");
+                    }
+                    return moods;
+                }));
+        }
+
+        // remove duplicates
+        tags = tags.filter((item, index, self) => self.indexOf(item) === index);
+
+        this.setState({
+            tags: tags
+        });
+
+        // save dominantColors in state
+        if (annotation.imagePropertiesAnnotation) {
+            this.setState({
+                dominantColors: annotation.imagePropertiesAnnotation.dominantColors
+            });
+        }
+    }
+
     handleFileRead(reader) {
         const base64Image = reader.result;
         this.setState({
             base64Image: base64Image
         });
+
+        annotateImage(base64Image)
+        .then(response => response.json())
+        .then(json => {
+            console.log("Annotate Result:", json);
+            this.convertImageAnnotationsToTags(json);
+        })
+        .catch(error => console.warn("Error while annotating image:", error));
     }
 
     handleDrop(acceptedFiles) {
@@ -51,7 +129,8 @@ class UploadForm extends React.Component {
 
     handleClose() {
         this.setState({
-            base64Image: null
+            base64Image: null,
+            tags: []
         });
         this.props.onClose();
     }
@@ -67,7 +146,7 @@ class UploadForm extends React.Component {
             .catch(error => console.warn("Error while submitting image:", error));
     }
 
-    getActions() {
+    renderActions() {
         return [
             <FlatButton label="Cancel"
                         primary={true}
@@ -93,7 +172,7 @@ class UploadForm extends React.Component {
     render() {
         return (
             <Dialog title="Upload your image"
-                    actions={this.getActions()}
+                    actions={this.renderActions()}
                     modal={false}
                     open={this.props.isOpen}
                     onRequestClose={() => this.handleClose()}>
@@ -108,6 +187,7 @@ class UploadForm extends React.Component {
                 <ChipInput style={{width: '100%'}}
                            hintText="Tags"
                            floatingLabelText="Tags"
+                           value={this.state.tags}
                            onChange={(tags) => this.handleTagsChange(tags)} />
             </Dialog>
         );
