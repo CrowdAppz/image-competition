@@ -10,7 +10,8 @@ var jsonParser = bodyParser.json({'limit': '50mb'});
 
 const getKeyPhrases = require("./cognitive-services-api").getKeyPhrases;
 const getSentiment = require("./cognitive-services-api").getSentiment;
-
+const getSentimentScore = require("./image-statistics-utils").getSentimentScore;
+const getTopKeyPhrases = require("./image-statistics-utils").getTopKeyPhrases;
 
 // set headers for all responses
 app.use(function(req, res, next) {
@@ -20,85 +21,86 @@ app.use(function(req, res, next) {
 });
 
 app.use(function(req, res, next){
-  if (req.is('text/*')) {
-    req.text = '';
-    req.setEncoding('utf8');
-    req.on('data', function(chunk){ req.text += chunk });
-    req.on('end', next);
-  } else {
-    next();
-  }
+    if (req.is('text/*')) {
+        req.text = '';
+        req.setEncoding('utf8');
+        req.on('data', function(chunk){ req.text += chunk });
+        req.on('end', next);
+    } else {
+        next();
+    }
 });
 
 app.post('/image/upload', jsonParser, function(req, res) {
-  // save the image base64 encoded string
-  mongoHandler.insertImage(req.body);
-  res.end();
+    // save the image base64 encoded string
+    mongoHandler.insertImage(req.body);
+    res.end();
 });
 
 app.get('/image/findall', function(req, res) {
-  // find all images
-  mongoHandler.getImages(function(imageData){
-    res.end(JSON.stringify(imageData));
-  });
+    // find all images
+    mongoHandler.getImages(function(imageData){
+        res.end(JSON.stringify(imageData));
+    });
 });
 
 app.post('/image/search', function(req, res) {
-  // search
-  console.log(req);
-  mongoHandler.getImagesByTags(req.text, function(imageData){
-    res.end(JSON.stringify(imageData));
-  });
+    // search
+    console.log(req);
+    mongoHandler.getImagesByTags(req.text, function(imageData){
+        res.end(JSON.stringify(imageData));
+    });
 });
 
 app.get('/image/:imageId', function(req, res){
-  mongoHandler.getImage(req.params.imageId, function(imageData){
-    res.end(JSON.stringify(imageData));
-  });
+    mongoHandler.getImage(req.params.imageId, function(imageData){
+        const sentimentScore = getSentimentScore(imageData);
+        const topKeyPhrases = getTopKeyPhrases(imageData);
+        imageData.sentimentScore = sentimentScore;
+        imageData.topKeyPhrases = topKeyPhrases;
+        res.end(JSON.stringify(imageData));
+    });
 });
 
 app.post('/image/addcomment', jsonParser, function(req, res){
-  var imageId = req.body.imageId;
-  var comment = req.body.comment;
+    var imageId = req.body.imageId;
+    var comment = req.body.comment;
 
 
-  // Keyphrase result: {"documents":[{"keyPhrases":["food","tapas","weather","barcelona"],"id":"foo-to-the-bar"}],"errors":[]}
-  // Sentiment result: {"documents":[{"score":0.9080997,"id":"foo-to-the-bar"}],"errors":[]}
-  getKeyPhrases(comment)
-    .then(response => response.json())
-    .then(keyPhraseResult => {
-      getSentiment(comment)
+    // Keyphrase result: {"documents":[{"keyPhrases":["food","tapas","weather","barcelona"],"id":"foo-to-the-bar"}],"errors":[]}
+    // Sentiment result: {"documents":[{"score":0.9080997,"id":"foo-to-the-bar"}],"errors":[]}
+    getKeyPhrases(comment)
         .then(response => response.json())
-        .then(sentimentResult => {
-          const commentObj = {
-            text: comment,
-            keyPhrases: keyPhraseResult.documents[0].keyPhrases,
-            sentiment: sentimentResult.documents[0].score
-          };
+        .then(keyPhraseResult => {
+            getSentiment(comment)
+                .then(response => response.json())
+                .then(sentimentResult => {
+                    const commentObj = {
+                        text: comment,
+                        keyPhrases: keyPhraseResult.documents[0].keyPhrases,
+                        sentiment: sentimentResult.documents[0].score
+                    };
 
-          mongoHandler.addCommentToImage(imageId, commentObj, function(comments){
-            res.end(JSON.stringify(comments));
-          });
+                    mongoHandler.addCommentToImage(imageId, commentObj, function(comments){
+                        res.end(JSON.stringify(comments));
+                    });
+                })
+                .catch(error => console.warn("Error while loading sentiment:", error));
         })
-        .catch(error => console.warn("Error while loading sentiment:", error));
-    })
-    .catch(error => console.warn("Error while loading keyphrases:", error));
+        .catch(error => console.warn("Error while loading keyphrases:", error));
 });
 
 app.post('/autocomplete', function(req, res){
-  var result = [];
-  mongoHandler.getDistinctTags(function(items){
-    var filtered = items.filter(item => item.startsWith(req.text));
-    res.end(JSON.stringify(filtered));
-  });
+    var result = [];
+    mongoHandler.getDistinctTags(function(items){
+        var filtered = items.filter(item => item.startsWith(req.text));
+        res.end(JSON.stringify(filtered));
+    });
 });
 
-
 var server = app.listen(8001, 'localhost', function() {
-
     var host = server.address().address;
     var port = server.address().port;
 
     console.log("Example app listening at http://%s:%s", host, port)
-
 });
