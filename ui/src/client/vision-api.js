@@ -1,7 +1,7 @@
 import credentials from './credentials.json';
 
 const API_KEY = credentials.visionApiKey;
-const ANNOTATE_URL = "https://vision.googleapis.com/v1/images:annotate";
+const ANNOTATE_URL = `https://vision.googleapis.com/v1/images:annotate?key=${API_KEY}`;
 
 const FEATURES = [
     {
@@ -11,11 +11,11 @@ const FEATURES = [
         type: "LOGO_DETECTION",
         maxResults: 3
     }, {
+        type: "FACE_DETECTION",
+        maxResults: 3
+    }, {
         type: "LABEL_DETECTION",
         maxResults: 10
-    }, {
-        type: "TEXT_DETECTION",
-        maxResults: 3
     }, {
         type: "IMAGE_PROPERTIES",
         maxResults: 5
@@ -30,10 +30,12 @@ const annotateImage = imageBase64 => {
         method: "POST",
         headers: new Headers({"Content-Type": "application/json"}),
         body: JSON.stringify({
-            image: {
-                content: imageBase64
-            }
-            features: FEATURES
+            requests: [{
+                image: {
+                    content: imageBase64.split(",")[1]
+                },
+                features: FEATURES
+            }]
         })
     });
 };
