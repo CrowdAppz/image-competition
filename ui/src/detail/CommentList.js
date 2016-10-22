@@ -13,7 +13,7 @@ class CommentList extends React.Component {
         return (
             <div className="comment-container" key={index}>
                 <div className="comment-time">A few moments ago</div>
-                <div className="comment-text">{comment}</div>
+                <div className="comment-text">{comment.text}</div>
             </div>
         );
     }
