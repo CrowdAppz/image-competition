@@ -2,6 +2,7 @@
 *.iml
 target/
 glove.6B/
+similarity-service/glove.6B.zip
 *glove*.txt
 ui/src/client/credentials.json
 backend/credentials.json
