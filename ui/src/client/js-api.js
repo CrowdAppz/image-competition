@@ -26,6 +26,10 @@ const getAllImages = function() {
   return fetch(serverAddress + "/image/findall");
 }
 
+const getImage = function(imageId) {
+  return fetch(serverAddress + "/image/" + imageId);
+}
+
 const addCommentToImage = function(imageId, comment) {
   return fetch(serverAddress + "/image/addcomment", {
     method: "POST",
@@ -36,5 +40,15 @@ const addCommentToImage = function(imageId, comment) {
     })
   });
 }
-window.addCommentToImage = addCommentToImage;
-export {search, uploadImage, getAllImages, addCommentToImage};
+
+const autocomplete = function(text){
+  return fetch(serverAddress + "/autocomplete", {
+    method: "POST",
+    headers: new Headers({"Content-Type":"text/plain"}),
+    body: text
+  });
+}
+
+window.autocomplete = autocomplete;
+window.getImage = getImage;
+export {search, uploadImage, getAllImages, getImage, addCommentToImage, autocomplete};
