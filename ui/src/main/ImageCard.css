@@ -2,6 +2,9 @@
     margin-bottom: 16px;
     height: 320px;
 }
+.image-card-container:hover {
+    cursor: pointer;
+}
 
 .image-card-image {
     background-size: cover;

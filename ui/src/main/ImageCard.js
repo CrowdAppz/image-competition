@@ -1,4 +1,5 @@
 import React from 'react';
+import { browserHistory } from 'react-router'
 
 import './ImageCard.css';
 
@@ -17,12 +18,16 @@ class ImageCard extends React.Component {
         id: React.PropTypes.string
     };
 
+    handleCardClick(id) {
+        browserHistory.push(`/detail/${id}`)
+    }
+
     render() {
         const style = {
             backgroundImage: 'url(' + this.props.imageBase64 + ')'
         }
         return (
-            <div className="image-card-container">
+            <div className="image-card-container" onClick={() => this.handleCardClick(this.props.id)}>
                 <div className="image-card-image" style={style}>
                     <div className="image-card-details">
                         <span className="image-card-title">{this.props.title}</span>
