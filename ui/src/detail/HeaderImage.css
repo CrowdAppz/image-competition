@@ -1,0 +1,18 @@
+.header-image {
+    position: relative;
+    background-position: center;
+    background-size: cover;
+    height: 320px;
+}
+
+.header-image-title {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 8px;
+    color: white;
+    font-size: 18px;
+    line-height: 2;
+}
