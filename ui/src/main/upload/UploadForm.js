@@ -79,6 +79,9 @@ class UploadForm extends React.Component {
                 }));
         }
 
+        // remove duplicates
+        tags = tags.filter((item, index, self) => self.indexOf(item) === index);
+
         this.setState({
             tags: tags
         });
