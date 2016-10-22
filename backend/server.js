@@ -39,12 +39,20 @@ app.get('/image/findall', function(req, res) {
   });
 });
 
-app.post('/search', function(req, res) {
+app.post('/image/search', function(req, res) {
   // search
   console.log(req);
   mongoHandler.getImagesByTags(req.text, function(imageData){
     res.end(JSON.stringify(imageData));
   });
+});
+
+app.post('/image/addcomment', jsonParser, function(req, res){
+  var imageId = req.body.imageId;
+  var comment = req.body.comment;
+
+  mongoHandler.addCommentToImage(imageId, comment);
+  res.end();
 });
 
 

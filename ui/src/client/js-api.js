@@ -3,7 +3,7 @@ let port = 8001;
 let serverAddress = host + ":" + port;
 
 const search = function(tag) {
-  return fetch(serverAddress + "/search", {
+  return fetch(serverAddress + "/image/search", {
     method: "POST",
     headers: new Headers({"Content-Type":"text/plain"}),
     body: tag
@@ -25,6 +25,16 @@ const uploadImage = function(imageData, title, tags) {
 const getAllImages = function() {
   return fetch(serverAddress + "/image/findall");
 }
-window.search = search;
 
-export {search, uploadImage, getAllImages};
+const addCommentToImage = function(imageId, comment) {
+  return fetch(serverAddress + "/image/addcomment", {
+    method: "POST",
+    headers: new Headers({"Content-Type": "application/json"}),
+    body: JSON.stringify({
+      imageId: imageId,
+      comment: comment
+    })
+  });
+}
+window.addCommentToImage = addCommentToImage;
+export {search, uploadImage, getAllImages, addCommentToImage};

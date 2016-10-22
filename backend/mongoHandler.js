@@ -1,5 +1,6 @@
 // Retrieve
 var MongoClient = require('mongodb').MongoClient;
+var ObjectId = require('mongodb').ObjectId;
 
 var imagesDb = null;
 var collectionImageName = "image";
@@ -40,6 +41,14 @@ function getImagesByTags(tag, cb) {
   });
 }
 
+function addCommentToImage(imageId, comment) {
+  collectionImage.update(
+    {'_id': new ObjectId(imageId)},
+    {'$push': {'comments': comment}}
+  );
+}
+
 exports.insertImage = insertImage;
 exports.getImages = getImages;
 exports.getImagesByTags = getImagesByTags;
+exports.addCommentToImage = addCommentToImage;
