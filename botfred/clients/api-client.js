@@ -8,6 +8,17 @@ const getImageForId = imageId => {
     return fetch(requestUrl);
 };
 
+const searchForMotive = function(motive) {
+    return fetch(URL + "search", {
+        method: "POST",
+        headers: {
+            "Content-Type": "text/plain"
+        },
+        body: motive
+    });
+}
+
 module.exports = {
-    getImageForId
+    getImageForId,
+    searchForMotive
 };
