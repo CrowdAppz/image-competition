@@ -76,10 +76,32 @@ var controller = Botkit.slackbot({
     debug: true,
 });
 
+var apiai = require('botkit-middleware-apiai')({
+    token: "3268e202d51744749a684a6afd706c9e"
+});
+
+controller.middleware.receive.use(apiai.receive);
+
 var bot = controller.spawn({
     token: process.env.token
 }).startRTM();
 
+
+controller.hears(['show_image'], 'direct_message', apiai.hears, function(bot, message){
+  bot.reply(message, "I will show you pictures of: " + message.entities.motive);
+  //bot.reply(message, "Foobar");
+  // bot.api.reactions.add({
+  //     timestamp: message.ts,
+  //     channel: message.channel,
+  //     name: 'robot_face',
+  // }, function(err, res) {
+  //     if (err) {
+  //         bot.botkit.log('Failed to add emoji reaction :(', err);
+  //     }
+  // });
+  //
+  // bot.reply(message, 'Foobar.');
+});
 
 controller.hears(['hello', 'hi'], 'direct_message,direct_mention,mention', function(bot, message) {
 
