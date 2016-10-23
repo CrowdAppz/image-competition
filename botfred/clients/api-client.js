@@ -18,7 +18,17 @@ const searchForMotive = function(motive) {
     });
 }
 
+const getSimilarImages = function(wordArray, limit) {
+  if (!wordArray || wordArray.length === 0) {
+    return;
+  }
+  var query = "";
+  wordArray.map(word => query += word +",");
+  return fetch(URL + "similar/"+limit+"?words="+query);
+}
+
 module.exports = {
     getImageForId,
-    searchForMotive
+    searchForMotive,
+    getSimilarImages
 };
