@@ -36,7 +36,7 @@ controller.on("bot_message", (bot, message) => {
                 .then(response => response.json())
                 .then(json => {
                     bot.api.chat.postMessage({
-                        "channel": "@image-competition",
+                        "channel": "#image-competition",
                         "as_user": false,
                         "username": "Botfred",
                         "icon_emoji": ":upside_down_face:",
@@ -44,9 +44,18 @@ controller.on("bot_message", (bot, message) => {
                                 "fallback": "Check out this image: " + json.data.link,
                                 "title": "New comment on Image Competition",
                                 "title_link": "http://localhost:3000/detail/" + id,
-                                "image_url": json.data.link
+                                "image_url": json.data.link,
                             }
-                        ]
+                        ],
+                    }, function(error, response) {
+                        console.log("Callback of post message:", error, response);
+                        bot.api.reactions.add({
+                            timestamp: response.message.ts,
+                            channel: response.channel,
+                            name: 'mag_right',
+                        }, function(error, response) {
+                            console.log("Callback of add reaction:", error, response);
+                        });
                     });
                 })
                 .catch(error => console.warn("Error while getting link for image:", error));
