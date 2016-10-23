@@ -125,6 +125,33 @@ controller.hears(['hello', 'hi'], 'direct_message,direct_mention,mention', funct
     });
 });
 
+controller.hears('New comment for foo-bar*', 'direct_message', function(bot, message) {
+
+    bot.reply(message, {
+        attachments:[
+            {
+                title: 'Do you want to interact with my buttons?',
+                callback_id: '123',
+                attachment_type: 'default',
+                actions: [
+                    {
+                        "name":"yes",
+                        "text": "Yes",
+                        "value": "yes",
+                        "type": "button",
+                    },
+                    {
+                        "name":"no",
+                        "text": "No",
+                        "value": "no",
+                        "type": "button",
+                    }
+                ]
+            }
+        ]
+    });
+});
+
 controller.hears(['call me (.*)', 'my name is (.*)'], 'direct_message,direct_mention,mention', function(bot, message) {
     var name = message.match[1];
     controller.storage.users.get(message.user, function(err, user) {

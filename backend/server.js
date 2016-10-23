@@ -14,6 +14,8 @@ const getSentimentScore = require("./image-statistics-utils").getSentimentScore;
 const getTopKeyPhrases = require("./image-statistics-utils").getTopKeyPhrases;
 const getSimilarWords = require("./similar-api").getSimilarWords;
 
+const sendWebHookNewComment = require("./slack-webhook").sendWebHookNewComment;
+
 // set headers for all responses
 app.use(function(req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
@@ -66,6 +68,7 @@ app.post('/image/addcomment', jsonParser, function(req, res){
     var imageId = req.body.imageId;
     var comment = req.body.comment;
 
+    sendWebHookNewComment(imageId, comment);
 
     // Keyphrase result: {"documents":[{"keyPhrases":["food","tapas","weather","barcelona"],"id":"foo-to-the-bar"}],"errors":[]}
     // Sentiment result: {"documents":[{"score":0.9080997,"id":"foo-to-the-bar"}],"errors":[]}

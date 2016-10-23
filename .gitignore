@@ -11,3 +11,4 @@ backend/mongo/logs/*
 backend/node_modules/*
 botfred/botkit/*
 botfred/node_modules/*
+botfred/credentials.json
