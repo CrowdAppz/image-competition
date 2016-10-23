@@ -7,7 +7,7 @@ const sendWebHookNewComment = (imageId, comment) => {
     fetch(URL, {
         method: "POST",
         body: JSON.stringify({
-            text: `New comment for ${imageId}\n${comment}`
+            text: `${imageId}\n${comment}`
         })
     })
     .catch(error => console.log("Error while sending webhook", error));
