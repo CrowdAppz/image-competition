@@ -5,18 +5,26 @@
    ---------------------------------------------------------- */
 const credentials = require("./credentials.json");
 const BOT_TOKEN = credentials.slackBotToken;
+const API_AI_TOKEN = credentials.apiAiToken;
 
 var fetch = require("node-fetch");
 var Botkit = require('./lib/Botkit.js');
 var os = require('os');
 
 const getImageForId = require("./clients/api-client.js").getImageForId;
+const searchForMotive = require("./clients/api-client.js").searchForMotive;
 const getLinkForImageData = require("./clients/imgur-client.js").getLinkForImageData;
 
 var controller = Botkit.slackbot({
     debug: true,
     interactive_replies: true
 });
+
+var apiai = require('botkit-middleware-apiai')({
+    token: API_AI_TOKEN
+});
+
+controller.middleware.receive.use(apiai.receive);
 
 var bot = controller.spawn({
     token: BOT_TOKEN
@@ -61,4 +69,42 @@ controller.on("bot_message", (bot, message) => {
                 .catch(error => console.warn("Error while getting link for image:", error));
         })
         .catch(error => console.warn("Error while fetching image for id:", error));
+});
+
+/* ------------------------------------------
+   -- Listener for natural language search --
+   --------------------------------------- */
+controller.hears(['show_image'], 'direct_message,bot_message,direct_mention,mention', apiai.hears, function(bot, message){
+     searchForMotive(message.entities.motive)
+         .then(response => response.json())
+         .then(searchJson => {
+             console.log("got results", searchJson.length);
+             Promise.all(searchJson.map(image => {
+                 const imageData = image.imageBase64.split(",")[1];
+                 return getLinkForImageData(imageData).then(response => response.json());
+             }))
+             .then(linkJson => {
+                 const attachments = linkJson.map((link, index) => {
+                     return {
+                         "fallback": "Check out this image: " + link.data.link,
+                         "title": "I found this image for " + message.entities.motive,
+                         "title_link": "http://localhost:3000/detail/" + searchJson[index]._id,
+                         "image_url": link.data.link,
+                     };
+                 });
+
+                 bot.api.chat.postMessage({
+                     "channel": message.channel,
+                     "as_user": false,
+                     "username": "Botfred",
+                     "icon_emoji": ":upside_down_face:",
+                     "attachments": attachments,
+                 }, function(error, response) {
+                     console.log("Callback of post message:", error, response);
+                 });
+
+             })
+             .catch(error => console.warn("Error while getting links for search results:", error));
+         })
+         .catch(error => console.warn("Error while searching:", error));
 });
