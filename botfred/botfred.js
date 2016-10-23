@@ -36,7 +36,7 @@ controller.on("bot_message", (bot, message) => {
                 .then(response => response.json())
                 .then(json => {
                     bot.api.chat.postMessage({
-                        "channel": "@henningmu",
+                        "channel": "@image-competition",
                         "as_user": false,
                         "username": "Botfred",
                         "icon_emoji": ":upside_down_face:",
@@ -48,7 +48,6 @@ controller.on("bot_message", (bot, message) => {
                             }
                         ]
                     });
-
                 })
                 .catch(error => console.warn("Error while getting link for image:", error));
         })
