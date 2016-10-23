@@ -74,6 +74,7 @@ var os = require('os');
 
 var controller = Botkit.slackbot({
     debug: true,
+    interactive_replies: true
 });
 
 var apiai = require('botkit-middleware-apiai')({
@@ -87,20 +88,58 @@ var bot = controller.spawn({
 }).startRTM();
 
 
-controller.hears(['show_image'], 'direct_message', apiai.hears, function(bot, message){
-  bot.reply(message, "I will show you pictures of: " + message.entities.motive);
-  //bot.reply(message, "Foobar");
-  // bot.api.reactions.add({
-  //     timestamp: message.ts,
-  //     channel: message.channel,
-  //     name: 'robot_face',
-  // }, function(err, res) {
-  //     if (err) {
-  //         bot.botkit.log('Failed to add emoji reaction :(', err);
-  //     }
-  // });
-  //
-  // bot.reply(message, 'Foobar.');
+controller.on("reaction_added,reaction_removed,emoji_changed", function(bot, event){
+    //bot.botkit.log('Received an emoji', message);
+    console.log("Received an emoji");
+    bot.botkit.log("Foo", event);
+
+    bot.api.im.history({
+      channel: event.item.channel,
+      latest: event.item.ts,
+      count: 1,
+      inclusive: 1
+    }, function(err, response) {
+      // do something with the response
+      bot.botkit.log("Foobar", response);
+  });
+    //bot.reply(message, 'Hello.');
+});
+
+controller.hears(['show_image'], 'direct_message', apiai.hears, function(bot, message) {
+    //bot.reply(message, "Foobar");
+    bot.api.reactions.add({
+        timestamp: message.ts,
+        channel: message.channel,
+        name: 'robot_face',
+    }, function(err, res) {
+        if (err) {
+            bot.botkit.log('Failed to add emoji reaction :(', err);
+        }
+    });
+    bot.reply(message, "I will show you pictures of: " + message.entities.motive, function(err, resp){
+      console.log(resp);
+    });
+
+    //
+    // bot.reply(message, 'Foobar.');
+    // bot.reply(message, {
+    //     attachments: [{
+    //         title: "Do you want to interact with my buttons ?",
+    //         callback_id: "123",
+    //         attachment_type: "default",
+    //         actions: [{
+    //             "name": "yes",
+    //             "text": "Yes",
+    //             "value": "yes",
+    //             "type": "button",
+    //         }, {
+    //             "name": "no",
+    //             "text": "No",
+    //             "value": "no",
+    //             "type": "button",
+    //         }]
+    //     }]
+    // });
 });
 
 controller.hears(['hello', 'hi'], 'direct_message,direct_mention,mention', function(bot, message) {
@@ -128,27 +167,22 @@ controller.hears(['hello', 'hi'], 'direct_message,direct_mention,mention', funct
 controller.hears('New comment for foo-bar*', 'direct_message', function(bot, message) {
 
     bot.reply(message, {
-        attachments:[
-            {
-                title: 'Do you want to interact with my buttons?',
-                callback_id: '123',
-                attachment_type: 'default',
-                actions: [
-                    {
-                        "name":"yes",
-                        "text": "Yes",
-                        "value": "yes",
-                        "type": "button",
-                    },
-                    {
-                        "name":"no",
-                        "text": "No",
-                        "value": "no",
-                        "type": "button",
-                    }
-                ]
-            }
-        ]
+        attachments: [{
+            title: 'Do you want to interact with my buttons?',
+            callback_id: '123',
+            attachment_type: 'default',
+            actions: [{
+                "name": "yes",
+                "text": "Yes",
+                "value": "yes",
+                "type": "button",
+            }, {
+                "name": "no",
+                "text": "No",
+                "value": "no",
+                "type": "button",
+            }]
+        }]
     });
 });
 
@@ -177,34 +211,32 @@ controller.hears(['what is my name', 'who am i'], 'direct_message,direct_mention
                 if (!err) {
                     convo.say('I do not know your name yet!');
                     convo.ask('What should I call you?', function(response, convo) {
-                        convo.ask('You want me to call you `' + response.text + '`?', [
-                            {
-                                pattern: 'yes',
-                                callback: function(response, convo) {
-                                    // since no further messages are queued after this,
-                                    // the conversation will end naturally with status == 'completed'
-                                    convo.next();
-                                }
-                            },
-                            {
-                                pattern: 'no',
-                                callback: function(response, convo) {
-                                    // stop the conversation. this will cause it to end with status == 'stopped'
-                                    convo.stop();
-                                }
-                            },
-                            {
-                                default: true,
-                                callback: function(response, convo) {
-                                    convo.repeat();
-                                    convo.next();
-                                }
+                        convo.ask('You want me to call you `' + response.text + '`?', [{
+                            pattern: 'yes',
+                            callback: function(response, convo) {
+                                // since no further messages are queued after this,
+                                // the conversation will end naturally with status == 'completed'
+                                convo.next();
                             }
-                        ]);
+                        }, {
+                            pattern: 'no',
+                            callback: function(response, convo) {
+                                // stop the conversation. this will cause it to end with status == 'stopped'
+                                convo.stop();
+                            }
+                        }, {
+                            default: true,
+                            callback: function(response, convo) {
+                                convo.repeat();
+                                convo.next();
+                            }
+                        }]);
 
                         convo.next();
 
-                    }, {'key': 'nickname'}); // store the results in a field called nickname
+                    }, {
+                        'key': 'nickname'
+                    }); // store the results in a field called nickname
 
                     convo.on('end', function(convo) {
                         if (convo.status == 'completed') {
@@ -240,39 +272,37 @@ controller.hears(['shutdown'], 'direct_message,direct_mention,mention', function
 
     bot.startConversation(message, function(err, convo) {
 
-        convo.ask('Are you sure you want me to shutdown?', [
-            {
-                pattern: bot.utterances.yes,
-                callback: function(response, convo) {
-                    convo.say('Bye!');
-                    convo.next();
-                    setTimeout(function() {
-                        process.exit();
-                    }, 3000);
-                }
-            },
-        {
+        convo.ask('Are you sure you want me to shutdown?', [{
+            pattern: bot.utterances.yes,
+            callback: function(response, convo) {
+                convo.say('Bye!');
+                convo.next();
+                setTimeout(function() {
+                    process.exit();
+                }, 3000);
+            }
+        }, {
             pattern: bot.utterances.no,
             default: true,
             callback: function(response, convo) {
                 convo.say('*Phew!*');
                 convo.next();
             }
-        }
-        ]);
+        }]);
     });
 });
 
 
 controller.hears(['uptime', 'identify yourself', 'who are you', 'what is your name'],
-    'direct_message,direct_mention,mention', function(bot, message) {
+    'direct_message,direct_mention,mention',
+    function(bot, message) {
 
         var hostname = os.hostname();
         var uptime = formatUptime(process.uptime());
 
         bot.reply(message,
             ':robot_face: I am a bot named <@' + bot.identity.name +
-             '>. I have been running for ' + uptime + ' on ' + hostname + '.');
+            '>. I have been running for ' + uptime + ' on ' + hostname + '.');
 
     });
 
