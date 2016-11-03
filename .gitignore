@@ -8,6 +8,7 @@ ui/src/client/credentials.json
 backend/credentials.json
 backend/mongo/data/*
 backend/mongo/logs/*
+backend/mongo/*
 backend/node_modules/*
 botfred/botkit/*
 botfred/node_modules/*

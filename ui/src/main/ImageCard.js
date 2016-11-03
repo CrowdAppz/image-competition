@@ -1,5 +1,6 @@
 import React from 'react';
 import { browserHistory } from 'react-router'
+import {GridTile} from 'material-ui/GridList';
 
 import './ImageCard.css';
 
@@ -24,19 +25,17 @@ class ImageCard extends React.Component {
 
     render() {
         const style = {
-            backgroundImage: 'url(' + this.props.imageBase64 + ')'
+            backgroundImage: 'url(' + this.props.imageBase64 + ')',
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat"
         }
         return (
-            <div className="image-card-container" onClick={() => this.handleCardClick(this.props.id)}>
-                <div className="image-card-image" style={style}>
-                    <div className="image-card-details">
-                        <span className="image-card-title">{this.props.title}</span>
-                        <span className="image-card-subtitle">
-                          {this.props.tags.map((tag, index) => <span key={index} style={tagStyle}>{tag}</span>)}
-                        </span>
-                    </div>
-                </div>
-            </div>
+            <GridTile className="image-card-container"
+                      title={this.props.title}
+                      subtitle={this.props.tags.map((tag, index) => <span key={index} style={tagStyle}>{tag}</span>)}
+                      onClick={() => this.handleCardClick(this.props.id)}>
+                    <div className="image-card-image" style={style}></div>
+            </GridTile>
         );
     }
 }

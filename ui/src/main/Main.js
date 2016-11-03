@@ -1,4 +1,5 @@
 import React from 'react';
+import {GridList} from 'material-ui/GridList';
 import SearchBar from './SearchBar';
 import ImageCard from './ImageCard';
 import UploadButton from './upload/UploadButton';
@@ -32,10 +33,14 @@ class Main extends React.Component {
     }
 
     render() {
+        const style = {
+            margin: "72px auto",
+            width: "67%"
+        }
         return (
             <div className="main-container">
                 <SearchBar onSearch={text=>this.handleSearch(text)}/>
-                <div className="image-cards-container">
+                <GridList cellHeight={320} className="image-cards-container" style={style}>
                     {this.state.images.map(image =>
                       <ImageCard title={image.title}
                                  key={image._id}
@@ -44,7 +49,7 @@ class Main extends React.Component {
                                  comments={image.comments}
                                  imageBase64={image.imageBase64}
                       />)}
-                </div>
+                </GridList>
                 <UploadButton />
             </div>
         );
