@@ -68,29 +68,29 @@ app.post('/image/addcomment', jsonParser, function(req, res){
     var imageId = req.body.imageId;
     var comment = req.body.comment;
 
-    sendWebHookNewComment(imageId, comment);
+    // sendWebHookNewComment(imageId, comment);
 
     // Keyphrase result: {"documents":[{"keyPhrases":["food","tapas","weather","barcelona"],"id":"foo-to-the-bar"}],"errors":[]}
     // Sentiment result: {"documents":[{"score":0.9080997,"id":"foo-to-the-bar"}],"errors":[]}
-    getKeyPhrases(comment)
-        .then(response => response.json())
-        .then(keyPhraseResult => {
-            getSentiment(comment)
-                .then(response => response.json())
-                .then(sentimentResult => {
-                    const commentObj = {
-                        text: comment,
-                        keyPhrases: keyPhraseResult.documents[0].keyPhrases,
-                        sentiment: sentimentResult.documents[0].score
-                    };
-
-                    mongoHandler.addCommentToImage(imageId, commentObj, function(comments){
-                        res.end(JSON.stringify(comments));
-                    });
-                })
-                .catch(error => console.warn("Error while loading sentiment:", error));
-        })
-        .catch(error => console.warn("Error while loading keyphrases:", error));
+    // getKeyPhrases(comment)
+    //     .then(response => response.json())
+    //     .then(keyPhraseResult => {
+    //         getSentiment(comment)
+    //             .then(response => response.json())
+    //             .then(sentimentResult => {
+    //                 const commentObj = {
+    //                     text: comment,
+    //                     keyPhrases: keyPhraseResult.documents[0].keyPhrases,
+    //                     sentiment: sentimentResult.documents[0].score
+    //                 };
+    //
+    //                 mongoHandler.addCommentToImage(imageId, commentObj, function(comments){
+    //                     res.end(JSON.stringify(comments));
+    //                 });
+    //             })
+    //             .catch(error => console.warn("Error while loading sentiment:", error));
+    //     })
+    //     .catch(error => console.warn("Error while loading keyphrases:", error));
 });
 
 app.get('/image/similar/:limit', function(req, res){

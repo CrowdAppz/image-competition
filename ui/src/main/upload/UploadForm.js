@@ -112,13 +112,13 @@ class UploadForm extends React.Component {
             base64Image: base64Image
         });
 
-        annotateImage(base64Image)
-        .then(response => response.json())
-        .then(json => {
-            console.log("Annotate Result:", json);
-            this.convertImageAnnotationsToTags(json);
-        })
-        .catch(error => console.warn("Error while annotating image:", error));
+        // annotateImage(base64Image)
+        // .then(response => response.json())
+        // .then(json => {
+        //     console.log("Annotate Result:", json);
+        //     this.convertImageAnnotationsToTags(json);
+        // })
+        // .catch(error => console.warn("Error while annotating image:", error));
     }
 
     handleDrop(acceptedFiles) {
@@ -133,9 +133,23 @@ class UploadForm extends React.Component {
         });
     }
 
-    handleTagsChange(tags) {
+    // handleTagsChange(tags) {
+    //     console.log("tags changed", tags);
+    //     this.setState({
+    //         tags: tags
+    //     });
+    // }
+    handleAddChip(chip) {
+        const tags = _.cloneDeep(this.state.tags);
+        tags.push(chip)
         this.setState({
             tags: tags
+        });
+    }
+
+    handleDeleteChip(chip) {
+        this.setState({
+            tags: this.state.tags.filter(tag => tag !== chip)
         });
     }
 
@@ -203,7 +217,8 @@ class UploadForm extends React.Component {
                            hintText="Tags"
                            floatingLabelText="Tags"
                            value={this.state.tags}
-                           onChange={(tags) => this.handleTagsChange(tags)} />
+                           onRequestAdd={(chip) => this.handleAddChip(chip)}
+                           onRequestDelete={(chip) => this.handleDeleteChip(chip)} />
             </Dialog>
         );
     }
